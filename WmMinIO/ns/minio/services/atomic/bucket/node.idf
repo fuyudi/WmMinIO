@@ -12,6 +12,7 @@
     <value>java.security.NoSuchAlgorithmException</value>
     <value>java.util.List</value>
     <value>io.minio.BucketExistsArgs</value>
+    <value>io.minio.MakeBucketArgs</value>
     <value>io.minio.MinioClient</value>
     <value>io.minio.errors.ErrorResponseException</value>
     <value>io.minio.errors.InsufficientDataException</value>

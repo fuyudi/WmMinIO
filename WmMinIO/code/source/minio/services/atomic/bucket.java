@@ -12,6 +12,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -38,18 +39,91 @@ public final class bucket
 
 
 
-	public static final void getBuckets (IData pipeline)
+	public static final void addBucket (IData pipeline)
         throws ServiceException
 	{
-		// --- <<IS-START(getBuckets)>> ---
+		// --- <<IS-START(addBucket)>> ---
 		// @sigtype java 3.5
+		// [i] field:0:required bucketName
+		// [o] field:0:required code
+		// [o] field:0:required message
 		// [o] field:0:required data
 		MinioClient client = MinioClient.builder()
 				.endpoint("http://localhost:9000")
 				.credentials("AKIAIOSFODNN7EXAMPLE", "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
 				.build();
 		
-		String data = "";
+		IDataCursor pipelineCursor = pipeline.getCursor();
+		String bucketName = IDataUtil.getString(pipelineCursor, "bucketName");
+		
+		String code = "";
+		String message = "";
+		String data = null;
+		
+		try {
+			client.makeBucket(
+					MakeBucketArgs.builder()
+					.bucket(bucketName)
+					.build()
+					);
+			
+			code = "T";
+			message = "success";
+		} catch (InvalidKeyException e) {
+			code = "F";
+			message = "Invalid Key Exception : " + e.getLocalizedMessage();
+		} catch (ErrorResponseException e) {
+			code = "F";
+			message = "Error Response Exception : " + e.getLocalizedMessage();
+		} catch (InsufficientDataException e) {
+			code = "F";
+			message = "Insufficient Data Exception : " + e.getLocalizedMessage();
+		} catch (InternalException e) {
+			code = "F";
+			message = "Internal Exception : " + e.getLocalizedMessage();
+		} catch (InvalidResponseException e) {
+			code = "F";
+			message = "Invalid Response Exception : " + e.getLocalizedMessage();
+		} catch (NoSuchAlgorithmException e) {
+			code = "F";
+			message = "No Such Algorithm Exception : " + e.getLocalizedMessage();
+		} catch (ServerException e) {
+			code = "F";
+			message = "Server Exception : " + e.getLocalizedMessage();
+		} catch (XmlParserException e) {
+			code = "F";
+			message = "XML Parser Exception : " + e.getLocalizedMessage();
+		} catch (IOException e) {
+			code = "F";
+			message = "IO Exception : " + e.getLocalizedMessage();
+		}
+		
+		IDataUtil.put( pipelineCursor, "code", code );
+		IDataUtil.put( pipelineCursor, "message", message );
+		IDataUtil.put( pipelineCursor, "data", data );	
+		// --- <<IS-END>> ---
+
+                
+	}
+
+
+
+	public static final void getBuckets (IData pipeline)
+        throws ServiceException
+	{
+		// --- <<IS-START(getBuckets)>> ---
+		// @sigtype java 3.5
+		// [o] field:0:required code
+		// [o] field:0:required message
+		// [o] field:0:required data
+		MinioClient client = MinioClient.builder()
+				.endpoint("http://localhost:9000")
+				.credentials("AKIAIOSFODNN7EXAMPLE", "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
+				.build();
+		
+		String code = "";
+		String message = "";
+		String data = null;
 		
 		try {
 			List<Bucket> bucketList = client.listBuckets();
@@ -60,37 +134,41 @@ public final class bucket
 				stringBuilder.append("\n");
 			}
 			
+			code = "T";
+			message = "success";
 			data = stringBuilder.toString();
 		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "Invalid Key Exception : " + e.getLocalizedMessage();
 		} catch (ErrorResponseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "Error Response Exception : " + e.getLocalizedMessage();
 		} catch (InsufficientDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "Insufficient Data Exception : " + e.getLocalizedMessage();
 		} catch (InternalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "Internal Exception : " + e.getLocalizedMessage();
 		} catch (InvalidResponseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "Invalid Response Exception : " + e.getLocalizedMessage();
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "No Such Algorithm Exception : " + e.getLocalizedMessage();
 		} catch (ServerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "Server Exception : " + e.getLocalizedMessage();
 		} catch (XmlParserException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "XML Parser Exception : " + e.getLocalizedMessage();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			code = "F";
+			message = "IO Exception : " + e.getLocalizedMessage();
 		}
 		
 		IDataCursor pipelineCursor = pipeline.getCursor();
+		IDataUtil.put( pipelineCursor, "code", code );
+		IDataUtil.put( pipelineCursor, "message", message );
 		IDataUtil.put( pipelineCursor, "data", data );
 		// --- <<IS-END>> ---
 
