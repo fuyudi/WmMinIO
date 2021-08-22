@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Values version="2.0">
+  <value name="encodeutf8">true</value>
+  <value name="shared"></value>
+  <value name="extends"></value>
+  <array name="implements" type="value" depth="1">
+  </array>
+  <array name="imports" type="value" depth="1">
+    <value>java.io.IOException</value>
+    <value>java.security.InvalidKeyException</value>
+    <value>java.security.NoSuchAlgorithmException</value>
+    <value>java.util.List</value>
+    <value>io.minio.BucketExistsArgs</value>
+    <value>io.minio.MinioClient</value>
+    <value>io.minio.errors.ErrorResponseException</value>
+    <value>io.minio.errors.InsufficientDataException</value>
+    <value>io.minio.errors.InternalException</value>
+    <value>io.minio.errors.InvalidResponseException</value>
+    <value>io.minio.errors.ServerException</value>
+    <value>io.minio.errors.XmlParserException</value>
+    <value>io.minio.messages.Bucket</value>
+  </array>
+</Values>
