@@ -14,6 +14,7 @@ import java.util.List;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
+import io.minio.RemoveBucketArgs;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -68,7 +69,147 @@ public final class bucket
 					);
 			
 			code = "T";
-			message = "success";
+			message = "success create bucket";
+		} catch (InvalidKeyException e) {
+			code = "F";
+			message = "Invalid Key Exception : " + e.getLocalizedMessage();
+		} catch (ErrorResponseException e) {
+			code = "F";
+			message = "Error Response Exception : " + e.getLocalizedMessage();
+		} catch (InsufficientDataException e) {
+			code = "F";
+			message = "Insufficient Data Exception : " + e.getLocalizedMessage();
+		} catch (InternalException e) {
+			code = "F";
+			message = "Internal Exception : " + e.getLocalizedMessage();
+		} catch (InvalidResponseException e) {
+			code = "F";
+			message = "Invalid Response Exception : " + e.getLocalizedMessage();
+		} catch (NoSuchAlgorithmException e) {
+			code = "F";
+			message = "No Such Algorithm Exception : " + e.getLocalizedMessage();
+		} catch (ServerException e) {
+			code = "F";
+			message = "Server Exception : " + e.getLocalizedMessage();
+		} catch (XmlParserException e) {
+			code = "F";
+			message = "XML Parser Exception : " + e.getLocalizedMessage();
+		} catch (IOException e) {
+			code = "F";
+			message = "IO Exception : " + e.getLocalizedMessage();
+		}
+		
+		IDataUtil.put( pipelineCursor, "code", code );
+		IDataUtil.put( pipelineCursor, "message", message );
+		IDataUtil.put( pipelineCursor, "data", data );	
+		// --- <<IS-END>> ---
+
+                
+	}
+
+
+
+	public static final void checkBucket (IData pipeline)
+        throws ServiceException
+	{
+		// --- <<IS-START(checkBucket)>> ---
+		// @sigtype java 3.5
+		MinioClient client = MinioClient.builder()
+				.endpoint("http://localhost:9000")
+				.credentials("AKIAIOSFODNN7EXAMPLE", "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
+				.build();
+		
+		IDataCursor pipelineCursor = pipeline.getCursor();
+		String bucketName = IDataUtil.getString(pipelineCursor, "bucketName");
+		
+		String code = "";
+		String message = "";
+		String data = null;
+		
+		try {
+			boolean found = client.bucketExists(
+								BucketExistsArgs.builder()
+								.bucket(bucketName)
+								.build()
+							);
+			
+			if (found) {
+				code = "T";
+				message = "bucket exist";
+			} else {
+				code = "F";
+				message = "bucket not exist";
+			}
+			
+		} catch (InvalidKeyException e) {
+			code = "F";
+			message = "Invalid Key Exception : " + e.getLocalizedMessage();
+		} catch (ErrorResponseException e) {
+			code = "F";
+			message = "Error Response Exception : " + e.getLocalizedMessage();
+		} catch (InsufficientDataException e) {
+			code = "F";
+			message = "Insufficient Data Exception : " + e.getLocalizedMessage();
+		} catch (InternalException e) {
+			code = "F";
+			message = "Internal Exception : " + e.getLocalizedMessage();
+		} catch (InvalidResponseException e) {
+			code = "F";
+			message = "Invalid Response Exception : " + e.getLocalizedMessage();
+		} catch (NoSuchAlgorithmException e) {
+			code = "F";
+			message = "No Such Algorithm Exception : " + e.getLocalizedMessage();
+		} catch (ServerException e) {
+			code = "F";
+			message = "Server Exception : " + e.getLocalizedMessage();
+		} catch (XmlParserException e) {
+			code = "F";
+			message = "XML Parser Exception : " + e.getLocalizedMessage();
+		} catch (IOException e) {
+			code = "F";
+			message = "IO Exception : " + e.getLocalizedMessage();
+		}
+		
+		IDataUtil.put( pipelineCursor, "code", code );
+		IDataUtil.put( pipelineCursor, "message", message );
+		IDataUtil.put( pipelineCursor, "data", data );	
+		// --- <<IS-END>> ---
+
+                
+	}
+
+
+
+	public static final void deleteBucket (IData pipeline)
+        throws ServiceException
+	{
+		// --- <<IS-START(deleteBucket)>> ---
+		// @sigtype java 3.5
+		// [i] field:0:required bucketName
+		// [o] field:0:required code
+		// [o] field:0:required message
+		// [o] field:0:required data
+		MinioClient client = MinioClient.builder()
+				.endpoint("http://localhost:9000")
+				.credentials("AKIAIOSFODNN7EXAMPLE", "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
+				.build();
+		
+		IDataCursor pipelineCursor = pipeline.getCursor();
+		String bucketName = IDataUtil.getString(pipelineCursor, "bucketName");
+		
+		String code = "";
+		String message = "";
+		String data = null;
+		
+		try {
+			client.removeBucket(
+					RemoveBucketArgs.builder()
+					.bucket(bucketName)
+					.build()
+					);
+			
+			code = "T";
+			message = "success delete bucket";
 		} catch (InvalidKeyException e) {
 			code = "F";
 			message = "Invalid Key Exception : " + e.getLocalizedMessage();

@@ -14,6 +14,7 @@
     <value>io.minio.BucketExistsArgs</value>
     <value>io.minio.MakeBucketArgs</value>
     <value>io.minio.MinioClient</value>
+    <value>io.minio.RemoveBucketArgs</value>
     <value>io.minio.errors.ErrorResponseException</value>
     <value>io.minio.errors.InsufficientDataException</value>
     <value>io.minio.errors.InternalException</value>
