@@ -92,7 +92,8 @@
     </record>
   </record>
   <value name="node_comment">minio.services.atomic.bucket:getBuckets (1.0) : new, to get bucket(s) from MinIO
-minio.services.atomic.bucket:getBuckets (1.1) : add new output : code and message; handling exception</value>
+minio.services.atomic.bucket:getBuckets (1.1) : add new output : code and message; handling exception
+minio.services.atomic.bucket:getBuckets (1.2) : centralize MinIO configuration</value>
   <value name="stateless">yes</value>
   <value name="caching">no</value>
   <value name="prefetch">no</value>

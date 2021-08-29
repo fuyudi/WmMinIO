@@ -110,7 +110,8 @@
       <value name="modifiable">true</value>
     </record>
   </record>
-  <value name="node_comment">minio.services.atomic.bucket:deleteBucket (1.0) : new, to delete bucket in MinIO</value>
+  <value name="node_comment">minio.services.atomic.bucket:deleteBucket (1.0) : new, to delete bucket in MinIO
+minio.services.atomic.bucket:deleteBucket (1.1) : centralize MinIO configuration</value>
   <value name="stateless">yes</value>
   <value name="caching">no</value>
   <value name="prefetch">no</value>
