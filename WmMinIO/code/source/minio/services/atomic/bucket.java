@@ -257,16 +257,32 @@ public final class bucket
 		// [o] field:0:required code
 		// [o] field:0:required message
 		// [o] field:0:required data
-		MinioClient client = MinioClient.builder()
-				.endpoint("http://localhost:9000")
-				.credentials("AKIAIOSFODNN7EXAMPLE", "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY")
-				.build();
-		
 		String code = "";
 		String message = "";
 		String data = null;
 		
+		IData inCfg = IDataFactory.create();
+		IDataCursor typeCfg = inCfg.getCursor();
+		//		IDataUtil.put(typeCfg, "type", "gv"); //for gv configuration
+		IDataUtil.put(typeCfg, "type", "");
+		
+		IData outCfg = IDataFactory.create();	
+		
 		try {
+			outCfg = Service.doInvoke("minio.services.atomic.config", "getConfig", inCfg);
+			IDataCursor outputCfg = outCfg.getCursor();
+			String endpoint = IDataUtil.getString(outputCfg, "endpoint");
+			String accessKey = IDataUtil.getString(outputCfg, "accessKey");
+			String secretKey = IDataUtil.getString(outputCfg, "secretKey");
+			
+			typeCfg.destroy();
+			outputCfg.destroy();
+			
+			MinioClient client = MinioClient.builder()
+					.endpoint(endpoint)
+					.credentials(accessKey, secretKey)
+					.build();
+			
 			List<Bucket> bucketList = client.listBuckets();
 			StringBuilder stringBuilder = new StringBuilder();
 			
@@ -305,6 +321,9 @@ public final class bucket
 		} catch (IOException e) {
 			code = "F";
 			message = "IO Exception : " + e.getLocalizedMessage();
+		} catch (Exception e) {
+			code = "F";
+			message = "Exception : " + e.getLocalizedMessage();
 		}
 		
 		IDataCursor pipelineCursor = pipeline.getCursor();
