@@ -8,7 +8,9 @@ import com.wm.app.b2b.server.Service;
 import com.wm.app.b2b.server.ServiceException;
 // --- <<IS-START-IMPORTS>> ---
 import io.minio.GetObjectArgs;
+import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
+import io.minio.Result;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import io.minio.errors.ErrorResponseException;
@@ -17,6 +19,7 @@ import io.minio.errors.InternalException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
+import io.minio.messages.Item;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -128,6 +131,130 @@ public final class file
 		IDataUtil.put( pipelineCursor, "code", code );
 		IDataUtil.put( pipelineCursor, "message", message );
 		IDataUtil.put( pipelineCursor, "data", data );
+		// --- <<IS-END>> ---
+
+                
+	}
+
+
+
+	public static final void listFile (IData pipeline)
+        throws ServiceException
+	{
+		// --- <<IS-START(listFile)>> ---
+		// @sigtype java 3.5
+		// [i] field:0:required bucketName
+		// [i] field:0:required recursive {"false","true"}
+		// [o] field:0:required code
+		// [o] field:0:required message
+		// [o] field:0:required data
+		IDataCursor pipelineCursor = pipeline.getCursor();
+		String bucketName = IDataUtil.getString(pipelineCursor, "bucketName");
+		String recursive = IDataUtil.getString(pipelineCursor, "recursive");
+		
+		String code = "";
+		String message = "";
+		String data = null;
+		
+		IData inCfg = IDataFactory.create();
+		IDataCursor typeCfg = inCfg.getCursor();
+		//		IDataUtil.put(typeCfg, "type", "gv"); //for gv configuration
+		IDataUtil.put(typeCfg, "type", "");
+		
+		IData outCfg = IDataFactory.create();	
+		
+		try {
+			outCfg = Service.doInvoke("minio.services.atomic.config", "getConfig", inCfg);
+			IDataCursor outputCfg = outCfg.getCursor();
+			String endpoint = IDataUtil.getString(outputCfg, "endpoint");
+			String accessKey = IDataUtil.getString(outputCfg, "accessKey");
+			String secretKey = IDataUtil.getString(outputCfg, "secretKey");
+			
+			typeCfg.destroy();
+			outputCfg.destroy();
+			
+			MinioClient client = MinioClient.builder()
+					.endpoint(endpoint)
+					.credentials(accessKey, secretKey)
+					.build();
+			
+			Iterable<Result<Item>> results;
+			
+			if (recursive.equals("true")) {
+				results = client.listObjects(ListObjectsArgs.builder()
+						.bucket(bucketName)
+						.recursive(true)
+						.build());
+			} else {
+				results = client.listObjects(ListObjectsArgs.builder()
+						.bucket(bucketName)
+						.build());
+			}
+			
+			StringBuilder stringBuilder = new StringBuilder();
+			for (Result<Item> result : results) {
+				Item item = result.get();
+				stringBuilder.append(item.size() + "\t" + item.objectName());
+		        stringBuilder.append("\n");
+			}
+			data = stringBuilder.toString();
+			
+			code = "T";
+			message = "success get file";
+		} catch (InvalidKeyException e) {
+			code = "F";
+			message = "Invalid Key Exception : " + e.getLocalizedMessage();
+		} catch (ErrorResponseException e) {
+			code = "F";
+			message = "Error Response Exception : " + e.getLocalizedMessage();
+		} catch (InsufficientDataException e) {
+			code = "F";
+			message = "Insufficient Data Exception : " + e.getLocalizedMessage();
+		} catch (InternalException e) {
+			code = "F";
+			message = "Internal Exception : " + e.getLocalizedMessage();
+		} catch (InvalidResponseException e) {
+			code = "F";
+			message = "Invalid Response Exception : " + e.getLocalizedMessage();
+		} catch (NoSuchAlgorithmException e) {
+			code = "F";
+			message = "No Such Algorithm Exception : " + e.getLocalizedMessage();
+		} catch (ServerException e) {
+			code = "F";
+			message = "Server Exception : " + e.getLocalizedMessage();
+		} catch (XmlParserException e) {
+			code = "F";
+			message = "XML Parser Exception : " + e.getLocalizedMessage();
+		} catch (IOException e) {
+			code = "F";
+			message = "IO Exception : " + e.getLocalizedMessage();
+		} catch (Exception e) {
+			code = "F";
+			message = "Exception : " + e.getLocalizedMessage();
+		}
+		
+		IDataUtil.put( pipelineCursor, "code", code );
+		IDataUtil.put( pipelineCursor, "message", message );
+		IDataUtil.put( pipelineCursor, "data", data );
+		// --- <<IS-END>> ---
+
+                
+	}
+
+
+
+	public static final void uploadFile (IData pipeline)
+        throws ServiceException
+	{
+		// --- <<IS-START(uploadFile)>> ---
+		// @sigtype java 3.5
+		// [i] field:0:required bucketName
+		// [i] field:0:required filename
+		// [i] field:0:required filepath
+		// [o] field:0:required code
+		// [o] field:0:required message
+		// [o] field:0:required data
+ 
 		// --- <<IS-END>> ---
 
                 
