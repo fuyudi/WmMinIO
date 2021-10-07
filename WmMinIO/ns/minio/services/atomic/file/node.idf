@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Values version="2.0">
+  <value name="node_type">interface</value>
+  <value name="node_subtype">unknown</value>
+  <value name="node_nsName">minio.services.atomic.file</value>
+  <value name="is_public">false</value>
+  <value name="encodeutf8">true</value>
+  <value name="shared"></value>
+  <value name="extends"></value>
+  <array name="implements" type="value" depth="1">
+  </array>
+  <array name="imports" type="value" depth="1">
+    <value>io.minio.GetObjectArgs</value>
+    <value>io.minio.MinioClient</value>
+    <value>java.security.InvalidKeyException</value>
+    <value>java.security.NoSuchAlgorithmException</value>
+    <value>io.minio.errors.ErrorResponseException</value>
+    <value>io.minio.errors.InsufficientDataException</value>
+    <value>io.minio.errors.InternalException</value>
+    <value>io.minio.errors.InvalidResponseException</value>
+    <value>io.minio.errors.ServerException</value>
+    <value>io.minio.errors.XmlParserException</value>
+    <value>java.io.IOException</value>
+    <value>java.io.InputStream</value>
+    <value>java.nio.charset.StandardCharsets</value>
+  </array>
+</Values>
